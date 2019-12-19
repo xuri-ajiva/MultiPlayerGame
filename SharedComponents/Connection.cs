@@ -22,7 +22,9 @@ namespace SharedComponents {
             public TcpClient Cl { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
         }
 
-        public static byte[] ReadStream(Stream s,int length) {
+        public static string ReadString(Stream s) { return new StreamReader( s ).ReadLine(); }
+
+        public static byte[] ReadStream(Stream s, int length) {
             var buffer = new byte[length];
             try {
                 s.Read( buffer, 0, buffer.Length );

@@ -47,7 +47,7 @@ namespace Server {
             while ( cl.Connected ) {
                 if ( st.DataAvailable ) {
                     Console.WriteLine( "revise data.." );
-                    processBuffer( Connection.ReadStream( st, cl.Available ), cl.GetHashCode() );
+                    new Thread( () => processBuffer( Connection.ReadStream( st, cl.Available ), cl.GetHashCode() ) ).Start();
                     Connection.WriteStream( st, NetMessage.OK );
                 }
             }

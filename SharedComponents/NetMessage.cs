@@ -12,10 +12,11 @@ namespace SharedComponents {
         public static readonly byte[] OK            = Combine( MS, new byte[] { 1, 1, 1, 1 } );
         public static readonly byte[] LOG           = Combine( MS, new byte[] { 2, 2, 2, 2 } );
         public static readonly byte[] XML           = Combine( MS, new byte[] { 3, 4, 4, 3 } );
+        public static readonly byte[] GET           = Combine( MS, new byte[] { 4, 3, 3, 4 } );
         public static readonly byte[] ERROR         = Combine( MS, new byte[] { 255, 255, 255, 255 } );
 
         public enum Message {
-            OK, ERROR, LOG, XML, Undefined
+            OK, ERROR, LOG, XML, GET, Undefined
         }
 
         public static byte[] MessageError(string error) { return Combine( Combine( MS, ERROR ), Encoding.UTF8.GetBytes( error ) ); }
@@ -27,6 +28,7 @@ namespace SharedComponents {
             if ( Equals( msg, ERROR ) ) return Message.ERROR;
             if ( Equals( msg, LOG ) ) return Message.LOG;
             if ( Equals( msg, XML ) ) return Message.XML;
+            if ( Equals( msg, GET ) ) return Message.GET;
 
             return Message.Undefined;
         }

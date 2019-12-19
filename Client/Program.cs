@@ -16,76 +16,101 @@ namespace Client {
         /// <summary>
         /// Der Haupteinstiegspunkt für die Anwendung.
         /// </summary>
-        private static Client _form;
+        public static Client _form;
 
         [STAThread]
         static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
-            _ = new Program();
+            try {
+                _ = new Program();
+            } catch (Exception e) {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine( e.StackTrace + "\n\n" + e.Message );
+            }
         }
 
         public Program() {
-            Console.WriteLine( "init Client" );
-            var cl = Connection.Connect( Connection.PORT_I, Connection.IP_LOCAL );
-            manageClient( cl );
-            //new Thread( () => new Program().manageClient( cl ) ).Start();
-            _form         =  new Client();
-            _form.UpdateS += SendUpdate;
-            Application.Run( _form );
-            Environment.Exit( 0 );
+            Application.Run( new ConnectionForm() );
+            //Console.WriteLine( "init Client" );
         }
 
-        private void SendUpdate(string obj) {
-            var send = NetMessage.Combine( NetMessage.XML, Encoding.UTF8.GetBytes( obj ) );
-            Connection.WriteStream( this._stream, send );
+        public static void SendUpdate(string obj) {
+            var send = NetMessage.Combine( NetMessage.XML, Encoding.Unicode.GetBytes( obj.Replace( "\n", "" ) ) );
+            Connection.WriteStream( _stream, send );
         }
 
-        private NetworkStream _stream;
+        private static NetworkStream _stream;
 
-        private void manageClient(TcpClient cl) {
+        public static void manageClient(TcpClient cl) {
             NetworkStream str = cl.GetStream();
-            this._stream = str;
+
+            _stream = str;
             new Thread( () => streamReader( str, cl ) ).Start();
-            new Thread( () => streamWriter( str, cl ) ).Start();
+            //new Thread( () => streamWriter( str, cl ) ).Start();
         }
 
-        void streamReader(NetworkStream st, TcpClient cl) {
+        static void streamReader(NetworkStream st, TcpClient cl) {
             while ( cl.Connected ) {
                 if ( st.DataAvailable ) {
-                    processBuffer( Connection.ReadStream( st, cl.Available ) );
+                    //new Thread( () =>  processBuffer( Connection.ReadStream( st, cl.Available ) ) ).Start();
+                    new Thread( () => DataAvailable( st ) ).Start();
                     //Connection.WriteStream( st, NetMessage.OK );
                 }
             }
         }
 
-        private void processBuffer(byte[] readStream) {
-            var head = NetMessage.SubArray( readStream, 0, NetMessage.MS_LENGTH );
+        private static void DataAvailable(NetworkStream s) {
+            var b = new byte[NetMessage.MS_LENGTH];
+            s.Read( b, 0, b.Length );
+            var ms   = NetMessage.GetMessage( b );
+            var data = Connection.ReadString( s );
 
-            var ms = NetMessage.GetMessage( head );
-            switch (ms) {
-                case NetMessage.Message.OK:    break;
-                case NetMessage.Message.ERROR: break;
+            processMessage( ms, data );
+        }
+
+        private static void processMessage(NetMessage.Message message, string data) {
+            switch (message) {
+                case NetMessage.Message.OK: break;
+                case NetMessage.Message.ERROR:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine( data );
+                    Console.ResetColor();
+                    break;
                 case NetMessage.Message.LOG:
-                    Console.WriteLine( Encoding.UTF8.GetString( NetMessage.SubArray( readStream, NetMessage.MS_LENGTH, readStream.Length - NetMessage.MS_LENGTH ) ) );
+                    Console.WriteLine( data );
                     break;
                 case NetMessage.Message.Undefined: break;
                 case NetMessage.Message.XML:
-                    _form.Invoke( new Action( () => _form.CallBack( ms, Encoding.UTF8.GetString( NetMessage.SubArray( readStream, NetMessage.MS_LENGTH, readStream.Length - NetMessage.MS_LENGTH ) ) ) ) );
+                    _form.Invoke( new Action( () => _form.CallBack( message, data ) ) );
+                    break;
+                case NetMessage.Message.GET:
+                    _form.Invoke( new Action( () => _form.CallIn( message, data ) ) );
                     break;
                 default: throw new ArgumentOutOfRangeException();
             }
-
-            //Console.WriteLine( ms );
         }
 
-        void streamWriter(Stream st, TcpClient cl) {
+        private static void processBuffer(byte[] readStream) {
+            if ( readStream.Length < NetMessage.MS_LENGTH ) return;
+            var head = NetMessage.SubArray( readStream, 0, NetMessage.MS_LENGTH );
+            var ms   = NetMessage.GetMessage( head );
+
+            processMessage( ms, Encoding.Unicode.GetString( NetMessage.SubArray( readStream, NetMessage.MS_LENGTH, readStream.Length - NetMessage.MS_LENGTH ) ) );
+        }
+
+        static void streamWriter(Stream st, TcpClient cl) {
             while ( cl.Connected ) {
                 var ln = Console.ReadLine();
                 ln = string.IsNullOrEmpty( ln ) ? " " : ln;
-                var send = NetMessage.Combine( NetMessage.LOG, Encoding.UTF8.GetBytes( ln ) );
+                var send = NetMessage.Combine( NetMessage.LOG, Encoding.UTF8.GetBytes( ln.Replace( "\n", "" ) ) );
                 Connection.WriteStream( st, send );
             }
+        }
+
+        public static void RequestUpdate(string obj) {
+            var send = NetMessage.Combine( NetMessage.GET, Encoding.Unicode.GetBytes( obj.Replace( "\n", "" ) ) );
+            Connection.WriteStream( _stream, send );
         }
     }
 }
