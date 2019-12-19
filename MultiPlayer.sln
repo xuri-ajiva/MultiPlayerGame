@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedComponents", "SharedC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{06290E12-6B8B-4F0F-A443-B345DB0AC6A5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game", "Game\Game.csproj", "{4F19AC66-00C4-433B-960C-B3F0441AF205}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{06290E12-6B8B-4F0F-A443-B345DB0AC6A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06290E12-6B8B-4F0F-A443-B345DB0AC6A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06290E12-6B8B-4F0F-A443-B345DB0AC6A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F19AC66-00C4-433B-960C-B3F0441AF205}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F19AC66-00C4-433B-960C-B3F0441AF205}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F19AC66-00C4-433B-960C-B3F0441AF205}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F19AC66-00C4-433B-960C-B3F0441AF205}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
