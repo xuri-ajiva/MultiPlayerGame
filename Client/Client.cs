@@ -13,8 +13,8 @@ using SharedComponents;
 namespace Client {
     public partial class Client : Form {
         public Client() { InitializeComponent(); }
-        public event Action<string> UpdateS;
-        public event Action<string> RequestS;
+        public event Action<string, EventArgs> UpdateS;
+        public event Action<string,EventArgs> RequestS;
 
         private void Button1_Click(object sender, EventArgs e) { RPCCall( "button1", "Text", this.textBox1.Text ); }
 
@@ -85,9 +85,9 @@ namespace Client {
             OnUpdateS( XMl.To_XML( xml ) );
         }
 
-        protected virtual void OnUpdateS(string obj) { this.UpdateS?.Invoke( obj ); }
+        protected virtual void OnUpdateS(string obj) { this.UpdateS?.Invoke( obj, new EventArgs() ); }
 
-        protected virtual void OnRequestS(string obj) { this.RequestS?.Invoke( obj ); }
+        protected virtual void OnRequestS(string obj) { this.RequestS?.Invoke( obj, new EventArgs() ); }
 
         public static void Wait(int milliseconds) {
             Timer timer1 = new Timer();

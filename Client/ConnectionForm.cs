@@ -37,9 +37,9 @@ namespace Client {
         }
 
         void saveAutoComleation() {
-            File.Open( Application.ExecutablePath + "settings.xml",FileMode.OpenOrCreate ).Close();
+            File.Open( Application.ExecutablePath + "settings.xml", FileMode.OpenOrCreate ).Close();
             try {
-                Eternal.Settings.XMLOPERATION.SAVE( this._a, Application.ExecutablePath + "settings.xml" );
+                Eternal.Settings.XMLOPERATION.SAVE( new Settings() { C = this._a }, Application.ExecutablePath + "settings.xml" );
             } catch (Exception e) {
                 Console.WriteLine( e );
             }
@@ -47,7 +47,7 @@ namespace Client {
 
         private void loadAutoCompleate() {
             try {
-                this._a = Eternal.Settings.XMLOPERATION.LOAD<settings>( Application.ExecutablePath + "settings.xml" ).C;
+                this._a = Eternal.Settings.XMLOPERATION.LOAD<Settings>( Application.ExecutablePath + "settings.xml" ).C;
             } catch { }
 
             if ( this._a == null ) this._a = new AutoCompleteStringCollection();
@@ -76,17 +76,17 @@ namespace Client {
             saveAutoComleation();
             this.Hide();
             //new Thread( () => new Program().manageClient( cl ) ).Start();
-            Program._form         =  new Client();
-            Program._form.UpdateS += Program.SendUpdate;
+            Program._form          =  new Client();
+            Program._form.UpdateS  += Program.SendUpdate;
             Program._form.RequestS += Program.RequestUpdate;
-            Program._form.ShowDialog(this);
+            Program._form.ShowDialog( this );
             Environment.Exit( 0 );
         }
 
-        class settings {
+        private class Settings {
             public AutoCompleteStringCollection C;
 
-            public settings() { }
+            public Settings() { }
         }
     }
 }

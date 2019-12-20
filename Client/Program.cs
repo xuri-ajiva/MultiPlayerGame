@@ -35,7 +35,7 @@ namespace Client {
             //Console.WriteLine( "init Client" );
         }
 
-        public static void SendUpdate(string obj) {
+        public static void SendUpdate(string obj, EventArgs e) {
             var send = NetMessage.Combine( NetMessage.XML, Encoding.Unicode.GetBytes( obj.Replace( "\n", "" ) ) );
             Connection.WriteStream( _stream, send );
         }
@@ -108,7 +108,7 @@ namespace Client {
             }
         }
 
-        public static void RequestUpdate(string obj) {
+        public static void RequestUpdate(string obj, EventArgs e) {
             var send = NetMessage.Combine( NetMessage.GET, Encoding.Unicode.GetBytes( obj.Replace( "\n", "" ) ) );
             Connection.WriteStream( _stream, send );
         }
