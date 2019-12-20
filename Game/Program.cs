@@ -3,20 +3,77 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
+using OpenTK;
+using OpenGL;
+using Khronos;
+using OpenGL.CoreUI;
+using OpenTK.Graphics;
+using OpenTK.Input;
+using System.Drawing;
+using System.Threading;
+using GameFramework;
+using OpenTKFramework.Framework;
+using KeyPressEventArgs = OpenTK.KeyPressEventArgs;
+using Size = System.Drawing.Size;
 
-namespace Game
-{
-    static class Program
-    {
+namespace Game {
+    class Program {
         /// <summary>
         /// Der Haupteinstiegspunkt für die Anwendung.
         /// </summary>
         [STAThread]
-        static void Main()
-        {
+        static void Main() {
             Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.SetCompatibleTextRenderingDefault( false );
+            //Application.Run(new Form1());
+            new MainClass();
         }
+    }
+
+    class MainClass : OpenTKFramework.MainClass {
+        private SnakeGame sg;
+        private bool      update = true;
+
+        public override void Initialize(object sender, EventArgs e) { sg = new SnakeGame( Window.ClientSize ); }
+
+        public override void Update(object sender, FrameEventArgs e) {
+            if ( !this.update ) return;
+
+            if ( this.sg.GameUpdate_Tick() ) return;
+            this.update = false;
+            new Thread( () => {
+                var result = MessageBox.Show( @"Retry?", @"You Failed", MessageBoxButtons.AbortRetryIgnore );
+
+                this.sg.ResultSwitch( result );
+                this.update = true;
+            } ).Start();
+        }
+
+        public override void Render(object sender, FrameEventArgs e) {
+            I.ClearScreen( Color.CornflowerBlue );
+
+            // Add future render commands here
+            //I.DrawString("FPS: "         + (1.0 / e.Time), new System.Drawing.Point(10, 10), Color.Firebrick);
+            //I.DrawString("Average FPS: " + frameRate,      new System.Drawing.Point(10, 30), Color.Firebrick);
+            sg.PaintEventHandler( null, I );
+        }
+
+        public override void Shutdown(object sender, EventArgs e) { }
+
+        public MainClass() : base() {
+            this.Window = base.Create();
+
+            this.Window.KeyPress += WindowOnKeyPress;
+            this.Window.Resize += (sender, args) => {
+                this.Window.ClientSize = new Size( ( (int) ( this.Window.ClientSize.Width / SnakeGame.MultiScale ) ) * SnakeGame.MultiScale, ( (int) ( this.Window.ClientSize.Height / SnakeGame.MultiScale ) ) * SnakeGame.MultiScale );
+
+                this.sg.size = this.Window.ClientSize;
+            };
+
+            base.Run();
+        }
+
+        private void WindowOnKeyPress(object sender, KeyPressEventArgs e) { sg.ClientKeyPress( sender, e ); }
     }
 }
