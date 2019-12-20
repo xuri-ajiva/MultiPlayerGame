@@ -6,13 +6,15 @@ using OpenTK;
 
 namespace OpenTKFramework {
     public abstract class MainClass {
-        public int    numFrames  = 0;
-        public double framesTime = 0.0;
-        public int    frameRate  = 0;
+        public int    totalFramesRendert = 0;
+        public int    totalFramesUpdated = 0;
+        public int    numFrames          = 0;
+        public double framesTime         = 0.0;
+        public int    frameRate          = 0;
 
 
         public GraphicsManager   I;
-        public OpenTK.GameWindow Window = null;
+        public GameWindow Window = null;
 
         public abstract void Initialize(object sender, EventArgs e);
 
@@ -24,7 +26,7 @@ namespace OpenTKFramework {
 
         public GameWindow Create() {
             // Create static (global) window instance
-            Window = new OpenTK.GameWindow();
+            this.Window = new GameWindow();
 
             //// Hook up the initialize callback
             //Window.Load += new EventHandler<EventArgs>( Initialize );
@@ -36,50 +38,52 @@ namespace OpenTKFramework {
             //Window.Unload += new EventHandler<EventArgs>( Shutdown );
 
             // Hook up the initialize callback
-            Window.Load += delegate(object sender, EventArgs e) {
-                GraphicsManager.Instance.Initialize( Window );
-                I = GraphicsManager.Instance;
+            this.Window.Load += delegate(object sender, EventArgs e) {
+                GraphicsManager.Instance.Initialize( this.Window );
+                this.I = GraphicsManager.Instance;
                 Initialize( sender, e );
             };
             // Hook up the update callback
-            Window.UpdateFrame += delegate(object sender, FrameEventArgs e) {
-                numFrames  += 1;
-                framesTime += e.Time;
+            this.Window.UpdateFrame += delegate(object sender, FrameEventArgs e) {
+                this.totalFramesUpdated++;
+                this.numFrames  += 1;
+                this.framesTime += e.Time;
 
-                if ( framesTime >= 1.0f ) {
-                    frameRate  = (int) ( System.Convert.ToDouble( numFrames ) / framesTime );
-                    framesTime = 0.0;
-                    numFrames  = 0;
+                if ( this.framesTime >= 1.0f ) {
+                    this.frameRate  = (int) ( Convert.ToDouble( this.numFrames ) / this.framesTime );
+                    this.framesTime = 0.0;
+                    this.numFrames  = 0;
                 }
 
                 Update( sender, e );
             };
             // Hook up the render callback
-            Window.RenderFrame += delegate(object sender, FrameEventArgs e) {
+            this.Window.RenderFrame += delegate(object sender, FrameEventArgs e) {
+                this.totalFramesRendert++;
                 Render( sender, e );
-                I.SwapBuffers();
+                this.I.SwapBuffers();
             };
             // Hook up the shutdown callback
-            Window.Unload += delegate(object sender, EventArgs e) {
+            this.Window.Unload += delegate(object sender, EventArgs e) {
                 GraphicsManager.Instance.Shutdown();
                 Shutdown( sender, e );
             };
 
             // Set window title and size
-            Window.Title      = "Game Name";
-            Window.ClientSize = new Size( 800, 600 );
+            this.Window.Title      = "Game Name";
+            this.Window.ClientSize = new Size( 800, 600 );
 
-            return Window;
+            return this.Window;
         }
 
-        public void Run() {
+        public void Run(float updateRate = 60.0f) {
             // Run the game at 60 frames per second. This method will NOT return
             // until the window is closed.
-            Window.Run( 60.0f );
+            this.Window.Run( updateRate );
 
             // If we made it down here the window was closed. Call the windows
             // Dispose method to free any resources that the window might hold
-            Window.Dispose();
+            this.Window.Dispose();
 
         #if DEBUG
             Console.ReadLine();

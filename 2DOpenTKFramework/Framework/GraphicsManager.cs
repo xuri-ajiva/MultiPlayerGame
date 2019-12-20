@@ -131,6 +131,10 @@ namespace GameFramework {
             RectangleF rf = new RectangleF(rect.X, rect.Y, rect.Width, rect.Height);
             DrawRect(rf, c);
         }
+        public void DrawPoint(Point point, Color c) {
+            PointF rf = new PointF( point.X, point.Y );
+            DrawPoint( rf,c );
+        }
 
         public void DrawLine(Point p1, Point p2, Color c) {
             PointF pf1 = new PointF(p1.X, p1.Y);
@@ -150,6 +154,18 @@ namespace GameFramework {
             GL.Vertex3(rect.X + rect.Width, rect.Y + rect.Height, currentDepth);
             GL.Vertex3(rect.X + rect.Width, rect.Y, currentDepth);
             GL.Vertex3(rect.X, rect.Y, currentDepth);
+            GL.End();
+        }
+
+        public void DrawPoint(PointF point, Color c) {
+            if (!isInitialized) {
+                Error("Trying to draw point without intializing graphics manager!");
+            }
+            IncreaseDepth();
+
+            GL.Color3(c.R, c.G, c.B);
+            GL.Begin(PrimitiveType.Points);
+            GL.Vertex3(point.X, point.Y, currentDepth);
             GL.End();
         }
 

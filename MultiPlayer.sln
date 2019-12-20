@@ -6,14 +6,24 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiPlayer", "MultiPlayer\MultiPlayer.csproj", "{C1D6604C-1708-4CF7-84F6-EB93F94B1FB3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{983BFE60-7FE4-4748-BFA6-C31150E63A66}"
+	ProjectSection(ProjectDependencies) = postProject
+		{94AA3730-34AD-4D6D-BE6D-FCF5684A4874} = {94AA3730-34AD-4D6D-BE6D-FCF5684A4874}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{23E12CAE-7F8D-40B2-9D61-DC87E4B749F1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedComponents", "SharedComponents\SharedComponents.csproj", "{94AA3730-34AD-4D6D-BE6D-FCF5684A4874}"
+	ProjectSection(ProjectDependencies) = postProject
+		{94AA3730-34AD-4D6D-BE6D-FCF5684A4874} = {94AA3730-34AD-4D6D-BE6D-FCF5684A4874}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{06290E12-6B8B-4F0F-A443-B345DB0AC6A5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game", "Game\Game.csproj", "{4F19AC66-00C4-433B-960C-B3F0441AF205}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenGl.Performance", "OpenGl.Performance\OpenGl.Performance.csproj", "{85B28A17-C4D8-4BD2-A183-58E30DAAB313}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2DOpenTKFramework", "2DOpenTKFramework\2DOpenTKFramework.csproj", "{51025FFE-0064-4D96-99DF-DF6C96BBBD58}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedComponents", "SharedComponents\SharedComponents.csproj", "{94AA3730-34AD-4D6D-BE6D-FCF5684A4874}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +43,6 @@ Global
 		{23E12CAE-7F8D-40B2-9D61-DC87E4B749F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23E12CAE-7F8D-40B2-9D61-DC87E4B749F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23E12CAE-7F8D-40B2-9D61-DC87E4B749F1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{94AA3730-34AD-4D6D-BE6D-FCF5684A4874}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{94AA3730-34AD-4D6D-BE6D-FCF5684A4874}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{94AA3730-34AD-4D6D-BE6D-FCF5684A4874}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{94AA3730-34AD-4D6D-BE6D-FCF5684A4874}.Release|Any CPU.Build.0 = Release|Any CPU
 		{06290E12-6B8B-4F0F-A443-B345DB0AC6A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{06290E12-6B8B-4F0F-A443-B345DB0AC6A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06290E12-6B8B-4F0F-A443-B345DB0AC6A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +51,18 @@ Global
 		{4F19AC66-00C4-433B-960C-B3F0441AF205}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F19AC66-00C4-433B-960C-B3F0441AF205}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F19AC66-00C4-433B-960C-B3F0441AF205}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85B28A17-C4D8-4BD2-A183-58E30DAAB313}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85B28A17-C4D8-4BD2-A183-58E30DAAB313}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85B28A17-C4D8-4BD2-A183-58E30DAAB313}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85B28A17-C4D8-4BD2-A183-58E30DAAB313}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51025FFE-0064-4D96-99DF-DF6C96BBBD58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51025FFE-0064-4D96-99DF-DF6C96BBBD58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51025FFE-0064-4D96-99DF-DF6C96BBBD58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51025FFE-0064-4D96-99DF-DF6C96BBBD58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94AA3730-34AD-4D6D-BE6D-FCF5684A4874}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94AA3730-34AD-4D6D-BE6D-FCF5684A4874}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94AA3730-34AD-4D6D-BE6D-FCF5684A4874}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94AA3730-34AD-4D6D-BE6D-FCF5684A4874}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
