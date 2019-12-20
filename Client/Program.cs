@@ -19,7 +19,7 @@ namespace Client {
         public static Client _form;
 
         [STAThread]
-        static void Main() {
+        public static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
             try {

@@ -35,7 +35,7 @@ namespace Game {
         private SnakeGame sg;
         private bool      update = true;
 
-        public override void Initialize(object sender, EventArgs e) { sg = new SnakeGame( Window.ClientSize ); }
+        public override void Initialize(object sender, EventArgs e) { this.sg = new SnakeGame( this.Window.ClientSize ); }
 
         public override void Update(object sender, FrameEventArgs e) {
             if ( !this.update ) return;
@@ -51,18 +51,18 @@ namespace Game {
         }
 
         public override void Render(object sender, FrameEventArgs e) {
-            I.ClearScreen( Color.CornflowerBlue );
+            this.I.ClearScreen( Color.CornflowerBlue );
 
             // Add future render commands here
             //I.DrawString("FPS: "         + (1.0 / e.Time), new System.Drawing.Point(10, 10), Color.Firebrick);
             //I.DrawString("Average FPS: " + frameRate,      new System.Drawing.Point(10, 30), Color.Firebrick);
-            sg.PaintEventHandler( null, I );
+            this.sg.PaintEventHandler( null, this.I );
         }
 
         public override void Shutdown(object sender, EventArgs e) { }
 
         public MainClass() : base() {
-            this.Window = base.Create();
+            this.Window = Create();
 
             this.Window.KeyPress += WindowOnKeyPress;
             this.Window.Resize += (sender, args) => {
@@ -71,9 +71,13 @@ namespace Game {
                 this.sg.size = this.Window.ClientSize;
             };
 
-            base.Run();
+            
+            this.Window.VSync = VSyncMode.Off;
+            this.Window.TargetRenderFrequency = 100000;
+
+            Run();
         }
 
-        private void WindowOnKeyPress(object sender, KeyPressEventArgs e) { sg.ClientKeyPress( sender, e ); }
+        private void WindowOnKeyPress(object sender, KeyPressEventArgs e) { this.sg.ClientKeyPress( sender, e ); }
     }
 }

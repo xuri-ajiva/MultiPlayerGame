@@ -18,7 +18,7 @@ namespace Server {
             this._clStreams = new List<Connection.ClStreamObj>();
         }
 
-        static void Main(string[] args) { new ServerMain().Start(); }
+        public static void Main(string[] args) { new ServerMain().Start(); }
 
         private void Start() {
             var server = Connection.InitServer( Connection.PORT_I );

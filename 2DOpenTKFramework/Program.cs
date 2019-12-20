@@ -13,8 +13,8 @@ namespace OpenTKFramework {
         public int    frameRate          = 0;
 
 
-        public GraphicsManager   I;
-        public GameWindow Window = null;
+        public GraphicsManager I;
+        public GameWindow      Window = null;
 
         public abstract void Initialize(object sender, EventArgs e);
 
@@ -24,7 +24,9 @@ namespace OpenTKFramework {
 
         public abstract void Shutdown(object sender, EventArgs e);
 
-        public GameWindow Create() {
+        public GameWindow Create(Size s = default) {
+            if ( s == default ) s = new Size( 800, 600 );
+
             // Create static (global) window instance
             this.Window = new GameWindow();
 
@@ -71,7 +73,7 @@ namespace OpenTKFramework {
 
             // Set window title and size
             this.Window.Title      = "Game Name";
-            this.Window.ClientSize = new Size( 800, 600 );
+            this.Window.ClientSize = s;
 
             return this.Window;
         }

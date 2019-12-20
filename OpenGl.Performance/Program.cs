@@ -33,16 +33,18 @@ namespace OpenGl.Performance {
         public override void Render(object sender, FrameEventArgs e) {
             this.I.ClearScreen( Color.Black );
 
-            for ( int i = 0; i < this.Window.ClientSize.Width / size; i++ ) {
-                for ( int j = 0; j < this.Window.ClientSize.Height / size; j++ ) {
-                    var rec = new RectangleF( i * size, j * size, size, size );
+            this.I.tests();
 
-                    this.I.DrawRect( rec, ColorGenerator(this.totalFramesRendert,i,j) );
-
-                    // this.I.DrawRect(, Color.FromArgb((int) (Math.Sin( (double)i ) + 1)*255/2, (int) (Math.Cos( (double)j  ) + 1) *255 /2,0 /*(int) (-Math.Sin( (double)this.totalFramesRendert /size ) + 1) *255 /2 */));
-                    //this.I.DrawPoint( new PointF(i,j), Color.FromArgb( i%255,j %255,10 )  );
-                }
-            }
+            //for ( int i = 0; i < this.Window.ClientSize.Width / size; i++ ) {
+            //    for ( int j = 0; j < this.Window.ClientSize.Height / size; j++ ) {
+            //        var rec = new RectangleF( i * size, j * size, size, size );
+            //
+            //        this.I.DrawRect( rec, ColorGenerator(this.totalFramesRendert,i,j) );
+            //
+            //        // this.I.DrawRect(, Color.FromArgb((int) (Math.Sin( (double)i ) + 1)*255/2, (int) (Math.Cos( (double)j  ) + 1) *255 /2,0 /*(int) (-Math.Sin( (double)this.totalFramesRendert /size ) + 1) *255 /2 */));
+            //        //this.I.DrawPoint( new PointF(i,j), Color.FromArgb( i%255,j %255,10 )  );
+            //    }
+            //}
 
             this.I.DrawString( "FramesDrawn: " + this.totalFramesRendert, PointF.Subtract( new Point( this.Window.ClientSize ), new Size( 200, 50 ) ), Color.AliceBlue );
         }
@@ -67,12 +69,17 @@ namespace OpenGl.Performance {
         }
 
         public MainClass() {
-            Create();
+            Create( new Size(800,500));
+            this.Window.Location = new Point(10,10);
+
             this.Window.Resize += delegate(object sender, EventArgs args) {
                 this.Window.ClientSize = new Size( ( (int) ( this.Window.ClientSize.Width / size ) ) * size, ( (int) ( this.Window.ClientSize.Height / size ) ) * size );
             };
+            this.Window.VSync = VSyncMode.Off;
+            //this.Window.TargetRenderPeriod = 100D;
+            this.Window.TargetRenderFrequency = 10000;
 
-            Run( 10 );
+            Run( 200F);
         }
     }
 }

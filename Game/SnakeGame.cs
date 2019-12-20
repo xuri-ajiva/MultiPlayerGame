@@ -30,20 +30,21 @@ namespace Game {
         public SnakeGame(Size s) {
             this.size = s;
 
-            for ( var j = 0; j < 50; j++ ) this._snakeList.Add( Head[0] );
+            for ( var j = 0; j < 5; j++ ) this._snakeList.Add( Head[0] );
 
             ResultSwitch( DialogResult.Ignore );
         }
-
 
         public bool GameUpdate_Tick() {
             if ( !this._isRunning ) return false;
             this._tick++;
 
-            if ( this._tick % (int) this._speed != 0 ) return true;
+            try {
+                if ( this._tick % (int) this._speed != 0 ) return true;
+            } catch {}
 
             this._forwardDirection = this._quarriedDirection;
-          return  SnakeMove();
+            return SnakeMove();
         }
 
         public bool SnakeMove() {
@@ -108,36 +109,40 @@ namespace Game {
         }
 
         public bool AddInFront() {
-            if ( this._snakeList.Count == 0 ) return false;
-            var cur = this._snakeList[this._snakeList.Count - 1];
+            lock (this._snakeList) {
 
-            var rec = new Rectangle( Point.Empty, new Size( MultiScale, MultiScale ) );
 
-            switch (this._forwardDirection) {
-                case Direction.W:
-                    rec.X = cur.X - MultiScale;
-                    rec.Y = cur.Y;
-                    break;
-                case Direction.O:
-                    rec.X = cur.X + MultiScale;
-                    rec.Y = cur.Y;
-                    break;
-                case Direction.N:
-                    rec.Y = cur.Y - MultiScale;
-                    rec.X = cur.X;
-                    break;
-                case Direction.S:
-                    rec.Y = cur.Y + MultiScale;
-                    rec.X = cur.X;
-                    break;
-                default: throw new ArgumentOutOfRangeException();
+                if ( this._snakeList.Count == 0 ) return false;
+                var cur = this._snakeList[this._snakeList.Count - 1];
+
+                var rec = new Rectangle( Point.Empty, new Size( MultiScale, MultiScale ) );
+
+                switch (this._forwardDirection) {
+                    case Direction.W:
+                        rec.X = cur.X - MultiScale;
+                        rec.Y = cur.Y;
+                        break;
+                    case Direction.O:
+                        rec.X = cur.X + MultiScale;
+                        rec.Y = cur.Y;
+                        break;
+                    case Direction.N:
+                        rec.Y = cur.Y - MultiScale;
+                        rec.X = cur.X;
+                        break;
+                    case Direction.S:
+                        rec.Y = cur.Y + MultiScale;
+                        rec.X = cur.X;
+                        break;
+                    default: throw new ArgumentOutOfRangeException();
+                }
+
+                var t = IsSave( rec );
+                if ( !t ) return false;
+
+                this._snakeList.Add( rec );
+                return true;
             }
-
-            var t = IsSave( rec );
-            if ( !t ) return false;
-
-            this._snakeList.Add( rec );
-            return true;
         }
 
         public bool IsSave(Rectangle rec, bool isFood = false) {
@@ -161,8 +166,8 @@ namespace Game {
             var pnd = Point.Empty;
 
             for ( int i = 0; i < 100; i++ ) {
-                pnd.X = rnd.Next( 0, this.size.Width / MultiScale ) * MultiScale;
-                pnd.Y = rnd.Next( 0, size.Height     / MultiScale ) * MultiScale;
+                pnd.X = rnd.Next( 0, this.size.Width  / MultiScale ) * MultiScale;
+                pnd.Y = rnd.Next( 0, this.size.Height / MultiScale ) * MultiScale;
 
                 if ( IsSave( new Rectangle( pnd, new Size( MultiScale, MultiScale ) ) ) ) break;
             }
@@ -172,13 +177,21 @@ namespace Game {
         }
 
         public void PaintEventHandler(object sender, GraphicsManager e) {
-            foreach ( var r in this._snakeList ) {
+            //for ( int i = 0; i < this.size.Width; i += MultiScale ) {
+            //    for ( int j = 0; j < this.size.Height; j += MultiScale ) {
+            //        e.DrawTriangle( new PointF( i, j ), MultiScale, Color.Blue );
+            //    }
+            //}
+
+            for ( var i = 0; i < this._snakeList.Count; i++ ) {
+                var r = this._snakeList[i];
                 e.DrawRect( r, Color.Red );
+                e.DrawRect( r, Color.Black, OpenTK.Graphics.OpenGL.PrimitiveType.LineLoop );
             }
 
             e.DrawRect( this._snakeList[this._snakeList.Count - 1], Color.DarkRed );
 
-            e.DrawRect( new Rectangle( this._food, new Size( MultiScale, MultiScale ) ), Color.Green );
+            e.DrawCycle( PointF.Add(this._food, new Size(MultiScale /2, MultiScale /2)), MultiScale/2, Color.Green, 16 );
         }
 
         public void ClientKeyPress(object sender, OpenTK.KeyPressEventArgs e) {

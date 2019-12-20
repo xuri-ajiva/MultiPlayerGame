@@ -74,7 +74,7 @@ namespace Client {
             }
 
             saveAutoComleation();
-            this.Hide();
+            Hide();
             //new Thread( () => new Program().manageClient( cl ) ).Start();
             Program._form          =  new Client();
             Program._form.UpdateS  += Program.SendUpdate;

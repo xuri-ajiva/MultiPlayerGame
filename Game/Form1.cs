@@ -16,7 +16,7 @@ namespace Game {
         public Form1() {
             InitializeComponent();
 
-            var g = new OpenGL.GlControl();
+            var g = new GlControl();
 
             this.Controls.Add( g );
             g.Render += GOnRender;
