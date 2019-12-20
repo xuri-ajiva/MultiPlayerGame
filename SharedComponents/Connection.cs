@@ -28,7 +28,7 @@ namespace SharedComponents {
             var buffer = new byte[length];
             try {
                 s.Read( buffer, 0, buffer.Length );
-            } catch (Exception e) {
+            } catch  {
                 //Console.WriteLine( e );
                 return new byte[0];
             }
@@ -37,7 +37,7 @@ namespace SharedComponents {
         }
 
         public static void WriteStream(Stream s, byte[] data) {
-            try { s.Write( data, 0, data.Length ); } catch (Exception e) {
+            try { s.Write( data, 0, data.Length ); } catch {
                 //Console.WriteLine( e );
             }
         }
