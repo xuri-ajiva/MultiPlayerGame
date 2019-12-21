@@ -184,9 +184,9 @@ namespace GameFramework {
             DrawLine( pf1, pf2, c );
         }
 
-        public void DrawTriangle(Point p, float s, Color c) {
+        public void DrawTriangle(Point p, float s, Color c, bool flip = false) {
             PointF pf = new PointF( p.X, p.Y );
-            DrawTriangle( pf, s, c );
+            DrawTriangle( pf, s, c, flip );
         }
 
         public void DrawCycle(Point p, float r, Color c, int numOfSegments) {
@@ -259,7 +259,7 @@ namespace GameFramework {
             GL.End();
         }
 
-        public void DrawTriangle(PointF p, float s, Color c) {
+        public void DrawTriangle(PointF p, float s, Color c, bool flip = false) {
             if ( !this.isInitialized ) {
                 Error( "Trying to draw line without intializing graphics manager!" );
             }
@@ -272,9 +272,9 @@ namespace GameFramework {
             var h = Math.Sqrt( (double) 3 / 4 ) * s;
 
             //var a = Math.Sin()
-            GL.Vertex3( p.X,             p.Y,     this.currentDepth );
-            GL.Vertex3( p.X + s,         p.Y,     this.currentDepth );
-            GL.Vertex3( p.X + ( s / 2 ), p.Y + h, this.currentDepth );
+            GL.Vertex3( p.X,             p.Y,                      this.currentDepth );
+            GL.Vertex3( p.X + s,         p.Y,                      this.currentDepth );
+            GL.Vertex3( p.X + ( s / 2 ), p.Y + ( flip ? +h : -h ), this.currentDepth );
 
             GL.End();
         }

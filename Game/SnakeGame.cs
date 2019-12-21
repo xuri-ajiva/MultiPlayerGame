@@ -24,13 +24,22 @@ namespace Game {
         private List<Rectangle> _snakeList = new List<Rectangle>( Head );
         private double          _speed     = 10;
 
-        private int  _tick;
-        public  Size size;
+        private int _tick;
+
+        private Size size;
+        //Rectangle    test = new Rectangle();
+
+        public void SetSize(Size s) {
+            this.size = new Size( (int) s.Width, (int) ( s.Height * ( 1 + ( 1 - this.h ) ) ) );
+            Console.WriteLine( this.size );
+        }
+
+        float h = (float) Math.Sqrt( (double) 3 / 4 ) * 1;
 
         public SnakeGame(Size s) {
-            this.size = s;
+            this.SetSize( s );
 
-            for ( var j = 0; j < 5; j++ ) this._snakeList.Add( Head[0] );
+            for ( var j = 0; j < 500; j++ ) this._snakeList.Add( Head[0] );
 
             ResultSwitch( DialogResult.Ignore );
         }
@@ -41,7 +50,7 @@ namespace Game {
 
             try {
                 if ( this._tick % (int) this._speed != 0 ) return true;
-            } catch {}
+            } catch { }
 
             this._forwardDirection = this._quarriedDirection;
             return SnakeMove();
@@ -65,7 +74,7 @@ namespace Game {
                     var count = this._snakeList.Count;
                     this._snakeList = new List<Rectangle>( Head );
 
-                    const int maxSquare = 19;
+                    int maxSquare = 30;//(int) ( this.size.Height/MultiScale * h ) ;
 
                     for ( var i = 0; i < 999; i++ ) {
                         this._forwardDirection = Direction.S;
@@ -110,8 +119,6 @@ namespace Game {
 
         public bool AddInFront() {
             lock (this._snakeList) {
-
-
                 if ( this._snakeList.Count == 0 ) return false;
                 var cur = this._snakeList[this._snakeList.Count - 1];
 
@@ -176,6 +183,12 @@ namespace Game {
             this._food  =  pnd;
         }
 
+        public PointF MapXPointF(Point p) {
+            var x = this.h * p.Y;
+            var y = p.X + ( ( (int) ( p.Y / MultiScale ) % 2 ) == 0 ? 0 : .5f ) * MultiScale;
+            return new PointF( y, x );
+        }
+
         public void PaintEventHandler(object sender, GraphicsManager e) {
             //for ( int i = 0; i < this.size.Width; i += MultiScale ) {
             //    for ( int j = 0; j < this.size.Height; j += MultiScale ) {
@@ -183,15 +196,34 @@ namespace Game {
             //    }
             //}
 
-            for ( var i = 0; i < this._snakeList.Count; i++ ) {
-                var r = this._snakeList[i];
-                e.DrawRect( r, Color.Red );
-                e.DrawRect( r, Color.Black, OpenTK.Graphics.OpenGL.PrimitiveType.LineLoop );
+            for ( int i = 0; i < this.size.Width; i += MultiScale ) {
+                for ( int j = 0; j < this.size.Height; j += MultiScale ) {
+                    e.DrawTriangle( MapXPointF( new Point( i, j ) ), MultiScale, Color.FromArgb( 0, 0, 150 ) );
+                    e.DrawTriangle( MapXPointF( new Point( i, j ) ), MultiScale, Color.FromArgb( 0, 0, 180 ), true );
+                }
             }
 
-            e.DrawRect( this._snakeList[this._snakeList.Count - 1], Color.DarkRed );
+            var rd = new Rectangle();
+            var p  = new PointF();
 
-            e.DrawCycle( PointF.Add(this._food, new Size(MultiScale /2, MultiScale /2)), MultiScale/2, Color.Green, 16 );
+            for ( var i = 0; i < this._snakeList.Count; i++ ) {
+                rd = this._snakeList[i];
+                p  = MapXPointF( new Point( rd.X, rd.Y ) );
+                e.DrawTriangle( p, MultiScale, Color.Red );
+
+                //e.DrawRect( r, Color.Red );
+                //e.DrawRect( r, Color.Black, OpenTK.Graphics.OpenGL.PrimitiveType.LineLoop );
+            }
+
+            rd = this._snakeList[this._snakeList.Count - 1];
+            p  = MapXPointF( new Point( rd.X, rd.Y ) );
+            e.DrawTriangle( p, MultiScale, Color.DarkRed );
+
+            //e.DrawRect( this._snakeList[this._snakeList.Count - 1], Color.DarkRed );
+
+            //e.DrawRect( this.test, Color.OliveDrab );
+
+            e.DrawTriangle( MapXPointF( this._food ), MultiScale, Color.Green );
         }
 
         public void ClientKeyPress(object sender, OpenTK.KeyPressEventArgs e) {
@@ -209,7 +241,6 @@ namespace Game {
                 if ( code == Keys.Down.ToString() || code == Keys.S.ToString() ) this._quarriedDirection = Direction.S;
             }
         }
-
 
         public enum Direction {
             N,

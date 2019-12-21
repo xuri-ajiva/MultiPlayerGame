@@ -43,7 +43,7 @@ namespace Game {
             if ( this.sg.GameUpdate_Tick() ) return;
             this.update = false;
             new Thread( () => {
-                var result = MessageBox.Show( @"Retry?", @"You Failed", MessageBoxButtons.AbortRetryIgnore );
+                var result = MessageBox.Show(new WindowWrapper(this.Window.WindowInfo.Handle), @"Retry?", @"You Failed", MessageBoxButtons.AbortRetryIgnore);
 
                 this.sg.ResultSwitch( result );
                 this.update = true;
@@ -68,16 +68,30 @@ namespace Game {
             this.Window.Resize += (sender, args) => {
                 this.Window.ClientSize = new Size( ( (int) ( this.Window.ClientSize.Width / SnakeGame.MultiScale ) ) * SnakeGame.MultiScale, ( (int) ( this.Window.ClientSize.Height / SnakeGame.MultiScale ) ) * SnakeGame.MultiScale );
 
-                this.sg.size = this.Window.ClientSize;
+                this.sg.SetSize( this.Window.ClientSize );
             };
 
-            
-            this.Window.VSync = VSyncMode.Off;
+            this.Window.VSync                 = VSyncMode.Off;
             this.Window.TargetRenderFrequency = 100000;
 
             Run();
         }
 
         private void WindowOnKeyPress(object sender, KeyPressEventArgs e) { this.sg.ClientKeyPress( sender, e ); }
+    }
+
+    public class WindowWrapper : System.Windows.Forms.IWin32Window
+    {
+        public WindowWrapper(IntPtr handle)
+        {
+            _hwnd = handle;
+        }
+
+        public IntPtr Handle
+        {
+            get { return _hwnd; }
+        }
+
+        private IntPtr _hwnd;
     }
 }
