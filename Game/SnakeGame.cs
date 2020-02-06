@@ -30,7 +30,7 @@ namespace Game {
         //Rectangle    test = new Rectangle();
 
         public void SetSize(Size s) {
-            this.size = new Size( (int) s.Width, (int) ( s.Height * ( 1 + ( 1 - this.h ) ) ) );
+            this.size = new Size( (int)( s.Width +MultiScale), (int) ( s.Height * ( 1 + ( 1 - this.h ) ) ) );
             Console.WriteLine( this.size );
         }
 
@@ -39,7 +39,7 @@ namespace Game {
         public SnakeGame(Size s) {
             this.SetSize( s );
 
-            for ( var j = 0; j < 500; j++ ) this._snakeList.Add( Head[0] );
+            for ( var j = 0; j < 4; j++ ) this._snakeList.Add( Head[0] );
 
             ResultSwitch( DialogResult.Ignore );
         }
@@ -74,7 +74,7 @@ namespace Game {
                     var count = this._snakeList.Count;
                     this._snakeList = new List<Rectangle>( Head );
 
-                    int maxSquare = 30;//(int) ( this.size.Height/MultiScale * h ) ;
+                    int maxSquare = 30; //(int) ( this.size.Height/MultiScale * h ) ;
 
                     for ( var i = 0; i < 999; i++ ) {
                         this._forwardDirection = Direction.S;
@@ -210,6 +210,9 @@ namespace Game {
                 rd = this._snakeList[i];
                 p  = MapXPointF( new Point( rd.X, rd.Y ) );
                 e.DrawTriangle( p, MultiScale, Color.Red );
+                //e.DrawCycle( p,MultiScale/4,Color.Black, 10 );
+
+                //e.DrawTriangle( p, MultiScale, Color.Red,true );
 
                 //e.DrawRect( r, Color.Red );
                 //e.DrawRect( r, Color.Black, OpenTK.Graphics.OpenGL.PrimitiveType.LineLoop );

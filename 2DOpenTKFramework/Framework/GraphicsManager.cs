@@ -173,25 +173,25 @@ namespace GameFramework {
             DrawRect( rf, c, dm );
         }
 
-        public void DrawPoint(Point point, Color c) {
+        public void DrawPoint(Point point, Color c, PrimitiveType dm =PrimitiveType.Points) {
             PointF rf = new PointF( point.X, point.Y );
-            DrawPoint( rf, c );
+            DrawPoint( rf, c,dm );
         }
 
-        public void DrawLine(Point p1, Point p2, Color c) {
+        public void DrawLine(Point p1, Point p2, Color c, PrimitiveType dm = PrimitiveType.Lines) {
             PointF pf1 = new PointF( p1.X, p1.Y );
             PointF pf2 = new PointF( p2.X, p2.Y );
-            DrawLine( pf1, pf2, c );
+            DrawLine( pf1, pf2, c, dm );
         }
 
-        public void DrawTriangle(Point p, float s, Color c, bool flip = false) {
+        public void DrawTriangle(Point p, float s, Color c, bool flip = false, PrimitiveType dm = PrimitiveType.Polygon) {
             PointF pf = new PointF( p.X, p.Y );
-            DrawTriangle( pf, s, c, flip );
+            DrawTriangle( pf, s, c, flip, dm );
         }
 
-        public void DrawCycle(Point p, float r, Color c, int numOfSegments) {
+        public void DrawCycle(Point p, float r, Color c, int numOfSegments, PrimitiveType dm = PrimitiveType.Polygon) {
             PointF pf = new PointF( p.X, p.Y );
-            DrawCycle( pf, r, c, numOfSegments );
+            DrawCycle( pf, r, c, numOfSegments, dm );
         }
 
         public void DrawRect(RectangleF rect, Color c, PrimitiveType dm = PrimitiveType.Quads) {
@@ -210,7 +210,7 @@ namespace GameFramework {
             GL.End();
         }
 
-        public void DrawPoint(PointF point, Color c) {
+        public void DrawPoint(PointF point, Color c, PrimitiveType dm = PrimitiveType.Points) {
             if ( !this.isInitialized ) {
                 Error( "Trying to draw point without intializing graphics manager!" );
             }
@@ -218,12 +218,12 @@ namespace GameFramework {
             IncreaseDepth();
 
             GL.Color3( c.R, c.G, c.B );
-            GL.Begin( PrimitiveType.Points );
+            GL.Begin( dm );
             GL.Vertex3( point.X, point.Y, this.currentDepth );
             GL.End();
         }
 
-        public void DrawLine(PointF p1, PointF p2, Color c) {
+        public void DrawLine(PointF p1, PointF p2, Color c, PrimitiveType dm = PrimitiveType.Lines) {
             if ( !this.isInitialized ) {
                 Error( "Trying to draw line without intializing graphics manager!" );
             }
@@ -231,13 +231,13 @@ namespace GameFramework {
             IncreaseDepth();
 
             GL.Color3( c.R, c.G, c.B );
-            GL.Begin( PrimitiveType.Lines );
+            GL.Begin( dm );
             GL.Vertex3( p1.X, p1.Y, this.currentDepth );
             GL.Vertex3( p2.X, p2.Y, this.currentDepth );
             GL.End();
         }
 
-        public void DrawCycle(PointF p, float r, Color c, int numOfSegments) {
+        public void DrawCycle(PointF p, float r, Color c, int numOfSegments, PrimitiveType dm = PrimitiveType.Polygon) {
             if ( !this.isInitialized ) {
                 Error( "Trying to draw line without intializing graphics manager!" );
             }
@@ -245,7 +245,7 @@ namespace GameFramework {
             IncreaseDepth();
 
             GL.Color3( c.R, c.G, c.B );
-            GL.Begin( PrimitiveType.Polygon );
+            GL.Begin( dm );
 
             for ( int ii = 0; ii < numOfSegments; ii++ ) {
                 var theta = 2.0f * Math.PI * ii / numOfSegments;
@@ -259,7 +259,7 @@ namespace GameFramework {
             GL.End();
         }
 
-        public void DrawTriangle(PointF p, float s, Color c, bool flip = false) {
+        public void DrawTriangle(PointF p, float s, Color c, bool flip = false, PrimitiveType dm = PrimitiveType.Polygon) {
             if ( !this.isInitialized ) {
                 Error( "Trying to draw line without intializing graphics manager!" );
             }
@@ -269,9 +269,10 @@ namespace GameFramework {
             GL.Color3( c.R, c.G, c.B );
             GL.Begin( PrimitiveType.Polygon );
 
-            var h = Math.Sqrt( (double) 3 / 4 ) * s;
+            var h = 0.866025403784439D * s; //Math.Sqrt( (double) 3 / 4 ) * s
+            
+            p = new PointF(p.X -s/2, p.Y + (float)h/2);
 
-            //var a = Math.Sin()
             GL.Vertex3( p.X,             p.Y,                      this.currentDepth );
             GL.Vertex3( p.X + s,         p.Y,                      this.currentDepth );
             GL.Vertex3( p.X + ( s / 2 ), p.Y + ( flip ? +h : -h ), this.currentDepth );

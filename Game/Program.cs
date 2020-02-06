@@ -43,7 +43,7 @@ namespace Game {
             if ( this.sg.GameUpdate_Tick() ) return;
             this.update = false;
             new Thread( () => {
-                var result = MessageBox.Show(new WindowWrapper(this.Window.WindowInfo.Handle), @"Retry?", @"You Failed", MessageBoxButtons.AbortRetryIgnore);
+                var result = MessageBox.Show(/*new WindowWrapper(this.Window.WindowInfo.Handle),*/ @"Retry?", @"You Failed", MessageBoxButtons.AbortRetryIgnore);
 
                 this.sg.ResultSwitch( result );
                 this.update = true;
@@ -63,7 +63,8 @@ namespace Game {
 
         public MainClass() : base() {
             this.Window = Create();
-
+            this.Window.WindowBorder = WindowBorder.Resizable;
+            this.Window.Cursor = MouseCursor.Empty;
             this.Window.KeyPress += WindowOnKeyPress;
             this.Window.Resize += (sender, args) => {
                 this.Window.ClientSize = new Size( ( (int) ( this.Window.ClientSize.Width / SnakeGame.MultiScale ) ) * SnakeGame.MultiScale, ( (int) ( this.Window.ClientSize.Height / SnakeGame.MultiScale ) ) * SnakeGame.MultiScale );
